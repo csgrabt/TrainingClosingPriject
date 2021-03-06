@@ -1,5 +1,7 @@
 # TrainingJavaClosingProject
 
-Egy adatbázis kapcsolattal elátott program, amely képes egy menürendszeren keresztül adatbázisba rögzíteni adatokat, mind konzolos bevitellel, mind fájlbeolvasással.
+Egy adatbázis kapcsolattal elátott program, amely képes egy Konzolos menürendszeren keresztül adatbázisba rögzíteni adatokat, mind konzolos bevitellel, mind fájlbeolvasással.
 Képes az adatbázis adattábláiból lekérdezéseket végrehajtani, majd a kinyert adatokat konzolta vagy *.txt file-ba kiírni.
-Tartalmaz JUnit és migrációs teszteket.
+A program 2 nyelvű, a nyelvi elemeket properties file-ok tartalmazzák, amik - a program csekély módosításával - könnyedén bővíthetők
+
+Tartalmaz JUnit és Migrációs teszteket.
