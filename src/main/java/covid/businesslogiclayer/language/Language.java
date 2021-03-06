@@ -1,7 +1,7 @@
 package covid.businesslogiclayer.language;
 
 public enum Language {
-    A("/hun.txt"), B("/eng.txt");
+    A("/hun.properties"), B("/eng.properties");
 
     private String filename;
 

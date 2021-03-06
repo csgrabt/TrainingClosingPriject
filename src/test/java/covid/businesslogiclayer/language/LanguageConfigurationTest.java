@@ -17,7 +17,7 @@ class LanguageConfigurationTest {
 
     @Test
     void get1ENG() {
-        LanguageConfiguration l = new LanguageConfiguration("/eng.txt");
+        LanguageConfiguration l = new LanguageConfiguration("/eng.properties");
 
         assertEquals("apple", l.getMessage("test"));
 

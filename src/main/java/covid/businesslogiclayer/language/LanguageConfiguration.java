@@ -12,7 +12,7 @@ public class LanguageConfiguration {
 
     private static final String ENCODING_UTF8 = "UTF-8";
     private Properties config;
-    private String language = "/start.txt";
+    private String language = "/start.properties";
 
 
     public void setLanguage(String language) {
