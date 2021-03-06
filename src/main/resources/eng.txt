@@ -1,0 +1,10 @@
+test = apple
+1 = 1. Registration
+2 = 2. Registrations from a file
+3 = 3. Generate a daily vaccination list
+4 = 4. Vaccination
+5 = 5. Vaccination failure
+6 = 6. Report
+7 = What would like to do:
+8 = 7. Exit
+exceptionFlyway = Some problem with dataSource, check the db.properties file!

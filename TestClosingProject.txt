@@ -1,0 +1,7 @@
+Név;Irányítószám;Életkor;E-mail cím;TAJ-szám
+Daryl Chasier;5400;86;dchasier0@comcast.net;123456788
+Sunny Stanlake;5400;86;sstanlake1@etsy.com;123456795
+Kristofor Brigginshaw;5400;75;kbrigginshaw2@patch.com;123456805
+Trever Spennock;5400;76;tspennock3@yellowbook.com;123456812
+Beckie Middleweek;5400;32;bmiddleweek4@opensource.org;123456829
+Orly McKeran;6224;54;omckeran5@fotki.com;123456836

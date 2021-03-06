@@ -1,0 +1,4 @@
+select Adja meg a nyelvet/Select a language:
+hun A. MAGYAR (Üssön A-t)
+eng B. ENGLISH (press B)
+newRow \n

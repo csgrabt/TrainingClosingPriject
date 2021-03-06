@@ -1,0 +1,10 @@
+test = alma
+1 = 1. Regisztráció
+2 = 2. Tömeges regisztráció
+3 = 3. Generálás
+4 = 4. Oltás
+5 = 5. Oltás meghiúsulás
+6 = 6. Riport
+7 = Adja meg, mit szeretne tenni:
+8 = 7. Kilépés
+exceptionFlyway = Probléma az adatbázis kapcsolattal, ellenőrízze a db.properties fájlt!
