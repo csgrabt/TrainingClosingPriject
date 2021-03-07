@@ -16,7 +16,7 @@ import static covid.businesslogiclayer.ProjectConfig.createDbConnection;
 
 
 public class CitizenDao {
-    private MariaDbDataSource dataSource = new MariaDbDataSource();
+    private final MariaDbDataSource dataSource = new MariaDbDataSource();
 
     public CitizenDao() {
         createDbConnection(dataSource);
@@ -27,14 +27,14 @@ public class CitizenDao {
     }
 
     public String findCityByZipCode(String zipCode) {
-        String city = null;
+        String city;
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement ps =
-                        conn.prepareStatement("select city from zipcodes where zip = ?");
+                        conn.prepareStatement("select city from zipcodes where zip = ?")
         ) {
             ps.setString(1, zipCode);
-            city = setCityFromDB(city, ps);
+            city = setCityFromDB(ps);
         } catch (SQLException sql) {
             throw new IllegalArgumentException(sql.getMessage(), sql);
         }
@@ -42,7 +42,8 @@ public class CitizenDao {
         return city;
     }
 
-    private String setCityFromDB(String city, PreparedStatement ps) {
+    private String setCityFromDB(PreparedStatement ps) {
+        String city = null;
         try (ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 city = rs.getString("city");
