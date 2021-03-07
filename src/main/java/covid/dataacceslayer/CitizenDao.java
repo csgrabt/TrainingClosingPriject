@@ -140,7 +140,7 @@ public class CitizenDao {
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement ps =
-                        conn.prepareStatement("select number_of_vaccination from citizens where citizen_id = ?");
+                        conn.prepareStatement("select number_of_vaccination from citizens where citizen_id = ?")
         ) {
             ps.setInt(1, searchCitizenIdBasedOnTaj(taj));
             counter = getNumberOfVaccinationDataProcess(counter, ps);
@@ -336,21 +336,7 @@ public class CitizenDao {
         ) {
             ps.setString(1, zip);
             ps.setString(2, LocalDate.now().minusDays(15).toString());
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    result.add(
-                            new Citizen(
-                                    rs.getString("citizen_name"),
-                                    rs.getString("zip"),
-                                    rs.getInt("age"),
-                                    rs.getString("email"),
-                                    rs.getString("taj"),
-                                    rs.getString("vaccination_type"),
-                                    rs.getInt("number_of_vaccination")));
-                }
-            } catch (SQLException sql) {
-                throw new IllegalArgumentException("No data", sql);
-            }
+            createCitizen(result, ps);
         } catch (SQLException sql) {
             throw new IllegalStateException("Cannot select Citizen based on ID", sql);
         }
@@ -359,22 +345,35 @@ public class CitizenDao {
         return result;
     }
 
+    private void createCitizen(List<Citizen> result, PreparedStatement ps) {
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                result.add(
+                        new Citizen(
+                                rs.getString("citizen_name"),
+                                rs.getString("zip"),
+                                rs.getInt("age"),
+                                rs.getString("email"),
+                                rs.getString("taj"),
+                                rs.getString("vaccination_type"),
+                                rs.getInt("number_of_vaccination")));
+            }
+        } catch (SQLException sql) {
+            throw new IllegalArgumentException("No data", sql);
+        }
+    }
+
     public String noteOfVaccinationFailed(String taj) {
         String typeOfVaccina = null;
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement ps =
-                        conn.prepareStatement("select note from vaccinations where citizen_id = ?");
+                        conn.prepareStatement("select note from vaccinations where citizen_id = ?")
         ) {
             ps.setInt(1, searchCitizenIdBasedOnTaj(taj));
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    typeOfVaccina = rs.getString("note");
 
-                }
-            } catch (SQLException sql) {
-                throw new IllegalArgumentException("No data", sql);
-            }
+            typeOfVaccina = getStringFromResultSet(ps);
+
         } catch (SQLException sql) {
             throw new IllegalStateException("Cannot select Citizen based on ID", sql);
         }
