@@ -21,6 +21,7 @@ public class VaccinationMain {
         try {
             Flyway flyway = Flyway.configure().dataSource(config.getCd().getDataSource()).load();
             flyway.migrate();
+
         } catch (Exception e){
             throw new IllegalArgumentException(config.getLanguage().getMessage("exceptionFlyway"));
         }

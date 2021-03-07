@@ -24,7 +24,7 @@ public class TheMenu {
             if (exit(number)) return;
             exitOrMainMenuAgain();
             progress = scanner.nextLine();
-        } while (progress.equals(sys.MENU_CONTROL));
+        } while (progress.equals(sys.getMENU_CONTROL()));
     }
 
 
