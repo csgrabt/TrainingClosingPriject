@@ -34,7 +34,7 @@ public class CitizenDao {
                         conn.prepareStatement("select city from zipcodes where zip = ?");
         ) {
             ps.setString(1, zipCode);
-            city = fetCityFromDB(city, ps);
+            city = setCityFromDB(city, ps);
         } catch (SQLException sql) {
             throw new IllegalArgumentException(sql.getMessage(), sql);
         }
@@ -42,10 +42,10 @@ public class CitizenDao {
         return city;
     }
 
-    private String fetCityFromDB(String city, PreparedStatement ps) {
+    private String setCityFromDB(String city, PreparedStatement ps) {
         try (ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                city = rs.getString(1);
+                city = rs.getString("city");
             }
         } catch (SQLException se) {
             throw new IllegalArgumentException("Something went wrong during reading the DB!", se);
@@ -123,18 +123,18 @@ public class CitizenDao {
                         conn.prepareStatement("select citizen_id from citizens where taj = ?");
         ) {
             ps.setString(1, taj);
-            id = getCitizrnIdFromDB(ps);
+            id = getCitizenIdFromDB(ps);
         } catch (SQLException sql) {
             throw new IllegalStateException("Cannot select Citizen", sql);
         }
         return id;
     }
 
-    private int getCitizrnIdFromDB(PreparedStatement ps) {
+    private int getCitizenIdFromDB(PreparedStatement ps) {
         int id;
         try (ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
-                id = rs.getInt(1);
+                id = rs.getInt("citizen_id");
             } else {
                 throw new IllegalArgumentException("The Database does not contained this TAJ number!");
             }
@@ -306,7 +306,7 @@ public class CitizenDao {
             ps.setString(1, zip);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    String numberOfV = rs.getString(1);
+                    String numberOfV = rs.getString("number_of_vaccination");
 
                     if (numberOfV.equals("0")) {
                         counter1++;
@@ -349,13 +349,13 @@ public class CitizenDao {
                 while (rs.next()) {
                     result.add(
                             new Citizen(
-                                    rs.getString(1),
-                                    rs.getString(2),
-                                    rs.getInt(3),
-                                    rs.getString(4),
-                                    rs.getString(5),
-                                    rs.getString(6),
-                                    rs.getInt(7)));
+                                    rs.getString("citizen_name"),
+                                    rs.getString("zip"),
+                                    rs.getInt("age"),
+                                    rs.getString("email"),
+                                    rs.getString("taj"),
+                                    rs.getString("vaccination_type"),
+                                    rs.getInt("number_of_vaccination")));
                 }
             } catch (SQLException sql) {
                 throw new IllegalArgumentException("No data", sql);
@@ -378,7 +378,7 @@ public class CitizenDao {
             ps.setInt(1, searchCitizenIdBasedOnTaj(taj));
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    typeOfVaccina = rs.getString(1);
+                    typeOfVaccina = rs.getString("note");
 
                 }
             } catch (SQLException sql) {
