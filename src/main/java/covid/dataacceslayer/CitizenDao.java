@@ -34,7 +34,7 @@ public class CitizenDao {
                         conn.prepareStatement("select city from zipcodes where zip = ?")
         ) {
             ps.setString(1, zipCode);
-            city = setCityFromDB(ps);
+            city = getStringFromResultSet(ps);
         } catch (SQLException sql) {
             throw new IllegalArgumentException(sql.getMessage(), sql);
         }
@@ -42,17 +42,6 @@ public class CitizenDao {
         return city;
     }
 
-    private String setCityFromDB(PreparedStatement ps) {
-        String city = null;
-        try (ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                city = rs.getString("city");
-            }
-        } catch (SQLException se) {
-            throw new IllegalArgumentException("Something went wrong during reading the DB!", se);
-        }
-        return city;
-    }
 
     private void checkThatDBContainsZipCode(String city) {
         if (city == null) {
