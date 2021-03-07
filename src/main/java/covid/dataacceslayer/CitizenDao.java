@@ -121,7 +121,7 @@ public class CitizenDao {
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement ps =
-                        conn.prepareStatement("select citizen_id from citizens where taj = ?");
+                        conn.prepareStatement("select citizen_id from citizens where taj = ?")
         ) {
             ps.setString(1, taj);
             id = getCitizenIdFromDB(ps);
@@ -230,20 +230,14 @@ public class CitizenDao {
 
 
     public String dateOfVaccination(String taj) {
-        String timeOfVaccination = null;
+        String timeOfVaccination;
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps =
                      conn.prepareStatement("select last_vaccination from citizens where taj = ?")) {
             ps.setString(1, taj);
 
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    timeOfVaccination = rs.getString(1);
-                }
-            } catch (SQLException sql) {
-                throw new IllegalArgumentException("No data", sql);
-            }
+            timeOfVaccination = getStringFromResultSet(ps);
 
         } catch (SQLException sql) {
 
@@ -254,22 +248,29 @@ public class CitizenDao {
         return timeOfVaccination;
     }
 
+    private String getStringFromResultSet(PreparedStatement ps) {
+        String result = null;
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                result = rs.getString(1);
+            }
+        } catch (SQLException sql) {
+            throw new IllegalArgumentException("No data", sql);
+        }
+        return result;
+    }
+
     public String typeOfVaccination(String taj) {
-        String typeOfVaccina = null;
+        String typeOfVaccina;
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement ps =
-                        conn.prepareStatement("select vaccination_type from vaccinations where citizen_id = ?");
+                        conn.prepareStatement("select vaccination_type from vaccinations where citizen_id = ?")
         ) {
             ps.setInt(1, searchCitizenIdBasedOnTaj(taj));
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    typeOfVaccina = rs.getString(1);
 
-                }
-            } catch (SQLException sql) {
-                throw new IllegalArgumentException("No data", sql);
-            }
+            typeOfVaccina = getStringFromResultSet(ps);
+
         } catch (SQLException sql) {
             throw new IllegalStateException("Cannot select Citizen based on ID", sql);
         }
@@ -281,7 +282,7 @@ public class CitizenDao {
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement ps =
-                        conn.prepareStatement("insert into Vaccinations(citizen_id, vaccination_date, status, note) values (?, ?, ?, ?)");
+                        conn.prepareStatement("insert into Vaccinations(citizen_id, vaccination_date, status, note) values (?, ?, ?, ?)")
         ) {
             ps.setInt(1, id);
             ps.setDate(2, Date.valueOf(date));
@@ -302,7 +303,7 @@ public class CitizenDao {
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement ps =
-                        conn.prepareStatement("select number_of_vaccination from citizens where zip = ?");
+                        conn.prepareStatement("select number_of_vaccination from citizens where zip = ?")
         ) {
             ps.setString(1, zip);
             try (ResultSet rs = ps.executeQuery()) {
@@ -342,7 +343,7 @@ public class CitizenDao {
                                 "AND (last_vaccination  < ? OR last_vaccination is NULL) " +
                                 "ORDER BY `age` DESC, citizen_name " +
                                 "LIMIT 16"
-                        );
+                        )
         ) {
             ps.setString(1, zip);
             ps.setString(2, LocalDate.now().minusDays(15).toString());
