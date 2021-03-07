@@ -364,7 +364,7 @@ public class CitizenDao {
     }
 
     public String noteOfVaccinationFailed(String taj) {
-        String typeOfVaccina = null;
+        String typeOfVaccina;
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement ps =
