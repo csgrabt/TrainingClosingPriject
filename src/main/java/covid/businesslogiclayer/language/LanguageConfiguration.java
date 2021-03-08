@@ -25,7 +25,7 @@ public class LanguageConfiguration {
 
     public LanguageConfiguration() {
         try (
-                InputStream resource = DatabaseConfiguration.class.getResourceAsStream(language);
+                InputStream resource = LanguageConfiguration.class.getResourceAsStream(language);
         ) {
             load(resource);
         } catch (IOException ioe) {
@@ -35,7 +35,7 @@ public class LanguageConfiguration {
 
     public LanguageConfiguration(String string) {
         try (
-                InputStream resource = DatabaseConfiguration.class.getResourceAsStream(string);
+                InputStream resource = LanguageConfiguration.class.getResourceAsStream(string);
         ) {
             load(resource);
         } catch (IOException ioe) {
@@ -51,7 +51,7 @@ public class LanguageConfiguration {
             config.load(reader);
             return config;
         } catch (IOException ioe) {
-            throw new RuntimeException("Cannot read properties file from inputstream", ioe);
+            throw new RuntimeException("Cannot read properties file from inputStream", ioe);
         }
     }
 

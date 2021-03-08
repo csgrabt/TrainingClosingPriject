@@ -8,7 +8,7 @@ class LanguageConfigurationTest {
 
     @Test
     void get1HUN() {
-        LanguageConfiguration l = new LanguageConfiguration("/HUN.txt");
+        LanguageConfiguration l = new LanguageConfiguration("/HUN.properties");
 
     assertEquals("alma", l.getMessage("test"));
 
