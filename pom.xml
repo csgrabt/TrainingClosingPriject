@@ -13,6 +13,7 @@
         <maven.compiler.target>15</maven.compiler.target>
     </properties>
 
+
     <dependencies>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -40,11 +41,22 @@
             <artifactId>flyway-core</artifactId>
             <version>6.5.3</version>
         </dependency>
-
-
-
-
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>covid.VaccinationMain</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 
 </project>

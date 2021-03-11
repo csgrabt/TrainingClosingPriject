@@ -24,7 +24,7 @@ public class MessageHun {
                         pc.getLanguage().getMessage("3") + "\n" +
                         pc.getLanguage().getMessage("4") + "\n" +
                         pc.getLanguage().getMessage("5") + "\n" +
-                        pc.getLanguage().getMessage("6") +"\n" +
+                        pc.getLanguage().getMessage("6") + "\n" +
                         pc.getLanguage().getMessage("8"));
     }
 
