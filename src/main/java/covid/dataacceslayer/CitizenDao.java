@@ -43,11 +43,7 @@ public class CitizenDao {
     }
 
 
-    private void checkThatDBContainsZipCode(String city) {
-        if (city == null) {
-            throw new IllegalArgumentException("Db does not contain the ZipCode!");
-        }
-    }
+
 
 
     public void writeRegistrationToDB(Citizen citizen) {
@@ -120,21 +116,6 @@ public class CitizenDao {
         return id;
     }
 
-    private int getCitizenIdFromDB(PreparedStatement ps) {
-        int id;
-        try (ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
-                id = rs.getInt("citizen_id");
-            } else {
-                throw new IllegalArgumentException("The Database does not contained this TAJ number!");
-            }
-        } catch (SQLException sql) {
-            throw new IllegalArgumentException("No data", sql);
-        }
-        return id;
-    }
-
-
     public Integer numberOfVaccination(String taj) {
         int counter = 0;
         try (
@@ -150,70 +131,12 @@ public class CitizenDao {
         return counter;
     }
 
-    private int getNumberOfVaccinationDataProcess(int counter, PreparedStatement ps) {
-        try (ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
-                String numberOfVaccination = rs.getString(1);
-                counter = getTheNumber(numberOfVaccination);
-            }
-        } catch (SQLException sql) {
-            throw new IllegalArgumentException("No data", sql);
-        }
-        return counter;
-    }
-
-    private int getTheNumber(String numberOfVaccination) {
-        int counter;
-        if (numberOfVaccination == null) {
-            counter = 0;
-        } else {
-            counter = Integer.parseInt(numberOfVaccination);
-        }
-        return counter;
-    }
-
 
     public void vaccinationSetTimeAndType(Citizen cz) {
         try (Connection conn = dataSource.getConnection()) {
             setTimeAndTypePreparedStatement(conn, cz);
         } catch (SQLException sql) {
             throw new IllegalArgumentException(sql.getMessage());
-        }
-    }
-
-
-    private void setTimeAndTypePreparedStatement(Connection conn, Citizen cz) throws SQLException {
-        conn.setAutoCommit(false);
-        try (
-                PreparedStatement ps =
-                        conn.prepareStatement("insert into Vaccinations(citizen_id, vaccination_date, status, vaccination_type) values (?, ?, ?, ?)");
-                PreparedStatement ps1 =
-                        conn.prepareStatement("Update citizens set  number_of_vaccination = ?, last_vaccination = ? where citizen_id = ? ")) {
-
-            ps.setInt(1, cz.getId());
-            ps.setDate(2, Date.valueOf(cz.getLastVaccination()));
-            ps.setString(3, cz.getStatus());
-            ps.setString(4, cz.getVaccinationType());
-
-            ps.executeUpdate();
-
-            errorHandling(cz);
-            ps1.setInt(1, cz.getNumberOfVaccination() + 1);
-            ps1.setDate(2, Date.valueOf(cz.getLastVaccination()));
-            ps1.setInt(3, cz.getId());
-            ps1.executeUpdate();
-
-            conn.commit();
-        } catch (SQLException | IllegalStateException se) {
-            conn.rollback();
-            throw new IllegalArgumentException(se.getMessage(), se);
-        }
-
-    }
-
-    private void errorHandling(Citizen cz) {
-        if (cz.getNumberOfVaccination() >= 2) {
-            throw new IllegalStateException("Túl sok oltás: " + cz.getNumberOfVaccination() + "!");
         }
     }
 
@@ -237,17 +160,7 @@ public class CitizenDao {
         return timeOfVaccination;
     }
 
-    private String getStringFromResultSet(PreparedStatement ps) {
-        String result = null;
-        try (ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
-                result = rs.getString(1);
-            }
-        } catch (SQLException sql) {
-            throw new IllegalArgumentException("No data", sql);
-        }
-        return result;
-    }
+
 
     public String typeOfVaccination(String taj) {
         String typeOfVaccina;
@@ -345,23 +258,6 @@ public class CitizenDao {
         return result;
     }
 
-    private void createCitizen(List<Citizen> result, PreparedStatement ps) {
-        try (ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                result.add(
-                        new Citizen(
-                                rs.getString("citizen_name"),
-                                rs.getString("zip"),
-                                rs.getInt("age"),
-                                rs.getString("email"),
-                                rs.getString("taj"),
-                                rs.getString("vaccination_type"),
-                                rs.getInt("number_of_vaccination")));
-            }
-        } catch (SQLException sql) {
-            throw new IllegalArgumentException("No data", sql);
-        }
-    }
 
     public String noteOfVaccinationFailed(String taj) {
         String typeOfVaccina;
@@ -379,6 +275,112 @@ public class CitizenDao {
         }
         return typeOfVaccina;
     }
+
+    private void checkThatDBContainsZipCode(String city) {
+        if (city == null) {
+            throw new IllegalArgumentException("Db does not contain the ZipCode!");
+        }
+    }
+    private void createCitizen(List<Citizen> result, PreparedStatement ps) {
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                result.add(
+                        new Citizen(
+                                rs.getString("citizen_name"),
+                                rs.getString("zip"),
+                                rs.getInt("age"),
+                                rs.getString("email"),
+                                rs.getString("taj"),
+                                rs.getString("vaccination_type"),
+                                rs.getInt("number_of_vaccination")));
+            }
+        } catch (SQLException sql) {
+            throw new IllegalArgumentException("No data", sql);
+        }
+    }
+    private String getStringFromResultSet(PreparedStatement ps) {
+        String result = null;
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                result = rs.getString(1);
+            }
+        } catch (SQLException sql) {
+            throw new IllegalArgumentException("No data", sql);
+        }
+        return result;
+    }
+
+    private void errorHandling(Citizen cz) {
+        if (cz.getNumberOfVaccination() >= 2) {
+            throw new IllegalStateException("Túl sok oltás: " + cz.getNumberOfVaccination() + "!");
+        }
+    }
+
+    private void setTimeAndTypePreparedStatement(Connection conn, Citizen cz) throws SQLException {
+        conn.setAutoCommit(false);
+        try (
+                PreparedStatement ps =
+                        conn.prepareStatement("insert into Vaccinations(citizen_id, vaccination_date, status, vaccination_type) values (?, ?, ?, ?)");
+                PreparedStatement ps1 =
+                        conn.prepareStatement("Update citizens set  number_of_vaccination = ?, last_vaccination = ? where citizen_id = ? ")) {
+
+            ps.setInt(1, cz.getId());
+            ps.setDate(2, Date.valueOf(cz.getLastVaccination()));
+            ps.setString(3, cz.getStatus());
+            ps.setString(4, cz.getVaccinationType());
+
+            ps.executeUpdate();
+
+            errorHandling(cz);
+            ps1.setInt(1, cz.getNumberOfVaccination() + 1);
+            ps1.setDate(2, Date.valueOf(cz.getLastVaccination()));
+            ps1.setInt(3, cz.getId());
+            ps1.executeUpdate();
+
+            conn.commit();
+        } catch (SQLException | IllegalStateException se) {
+            conn.rollback();
+            throw new IllegalArgumentException(se.getMessage(), se);
+        }
+
+    }
+
+    private int getCitizenIdFromDB(PreparedStatement ps) {
+        int id;
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                id = rs.getInt("citizen_id");
+            } else {
+                throw new IllegalArgumentException("The Database does not contained this TAJ number!");
+            }
+        } catch (SQLException sql) {
+            throw new IllegalArgumentException("No data", sql);
+        }
+        return id;
+    }
+
+    private int getNumberOfVaccinationDataProcess(int counter, PreparedStatement ps) {
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                String numberOfVaccination = rs.getString(1);
+                counter = getTheNumber(numberOfVaccination);
+            }
+        } catch (SQLException sql) {
+            throw new IllegalArgumentException("No data", sql);
+        }
+        return counter;
+    }
+
+    private int getTheNumber(String numberOfVaccination) {
+        int counter;
+        if (numberOfVaccination == null) {
+            counter = 0;
+        } else {
+            counter = Integer.parseInt(numberOfVaccination);
+        }
+        return counter;
+    }
+
 }
 
 
